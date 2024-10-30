@@ -1,43 +1,56 @@
-import { Body, Controller, Delete, Get, HttpCode, NotFoundException, Param, Patch, Post } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
-import { ProductsService } from 'src/products/products.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { UsersService } from './users.service';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Patch,
+  Post,
+} from "@nestjs/common";
+import { ProductsService } from "src/products/products.service";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
+import { UsersService } from "./users.service";
+import { UserEntity } from "./user.entity";
 
-@Controller('users')
+@Controller("users")
 export class UsersController {
-  constructor(private readonly usersService: UsersService, private readonly productsService: ProductsService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly productsService: ProductsService,
+  ) {}
 
   @Post()
   @HttpCode(201)
   async create(@Body() createUserDto: CreateUserDto) {
-    const saltOrRounds = 10;
-    const password = createUserDto.password;
-    const hash = await bcrypt.hash(password, saltOrRounds);
-    createUserDto.password = hash;
-    return this.usersService.createUser(createUserDto);
+    const userEntity = await UserEntity.create( {
+      email: createUserDto.email,
+      password: createUserDto.password,
+      role: createUserDto.role,
+      country: createUserDto.country,
+      firstName: createUserDto.firstName,
+      lastName: createUserDto.lastName,
+     });
+  
+    return this.usersService.createUser(userEntity);
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
+  @Get(":id")
+  async findOne(@Param("id") id: string) {
     //TODO: AGREGAR SALES Y ORDERS DE USUARIO
-    const user = await this.usersService.userById({ id: Number(id) });
-    const products = await this.productsService.findAll({authorId: +id});
-    if(!user){
-      return new NotFoundException('User not found')
-    }else{
-      return user.role == 'BUSINESS' ? { ...user, products: products } : user;
-    }
+    const user = await this.usersService.userById(Number(id));
+    const products = await this.productsService.findAll({ authorId: +id });
+    return user.role == "BUSINESS" ? { ...user, products: products } : user;
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  @Patch(":id")
+  update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(+id, updateUserDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
+  @Delete(":id")
+  remove(@Param("id") id: string) {
     return this.usersService.remove(+id);
   }
 }

@@ -41,7 +41,7 @@ export class OrdersController {
     if(total == createOrderDto.total){
       for(let sale of createOrderDto.sales) {
         //COMPROBAR VENDEDOR EXISTE
-        const seller = await this.usersService.userById({id:Number(sale.sellerId)});
+        const seller = await this.usersService.userById(Number(sale.sellerId));
         if(!seller){
           return new NotFoundException(`Seller not found`);
         }
