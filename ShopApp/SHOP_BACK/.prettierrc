@@ -1,4 +1,11 @@
 {
-  "singleQuote": true,
-  "trailingComma": "all"
+  "singleQuote": false,
+  "trailingComma": "all",
+  "bracketSpacing": true,
+  "importOrder": [
+    "^[./]"
+  ],
+  "importOrderSeparation": true,
+  "printWidth": 80,
+  "arrayElementNewline": "always"
 }
