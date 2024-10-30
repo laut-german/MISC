@@ -14,7 +14,6 @@ export class AuthController {
     if(!user){
       return new NotFoundException('User not found')
     }else{
-      console.log(email , data.password)
       const validPassword = await bcrypt.compare(data.password,user.password)
       if(validPassword){
         const jwt = await this.authService.login(user);

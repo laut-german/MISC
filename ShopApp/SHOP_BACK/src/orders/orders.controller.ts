@@ -59,6 +59,7 @@ export class OrdersController {
       const date = new Date(createOrderDto.date);
       const order = {id:createOrderDto.id,authorId:createOrderDto.authorId,total:createOrderDto.total,date}
       //TODO: PAGO AQUÍ
+      //@ts-ignore
       return this.ordersService.addOrder(order, createOrderDto.sales);
     }else{
       return new BadRequestException('Something is wrong with the prices...')

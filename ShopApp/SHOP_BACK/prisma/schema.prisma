@@ -62,7 +62,7 @@ model Cards {
   id    Int
   userId  Int
   owner   String
-  caducity  Date
+  caducity  DateTime
   active  Boolean
   @@id([id,userId])
 }
